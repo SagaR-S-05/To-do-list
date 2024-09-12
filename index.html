@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Task Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ff4d4d;
+            --secondary-color: #ff8080;
+            --background-color: #ffffff;
+            --text-color: #333333;
+            --card-color: #ffffff;
+            --accent-color: #ff1a1a;
+        }
+
+        .dark-mode {
+            --primary-color: #ff4d4d;
+            --secondary-color: #ff8080;
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-color: #333333;
+            --accent-color: #ff1a1a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .task-form {
+            display: flex;
+            margin-bottom: 20px;
+            background-color: var(--card-color);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-form input, .task-form select {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 1rem;
+            border: 2px solid var(--primary-color);
+            border-radius: 5px;
+            margin-right: 10px;
+            outline: none;
+            background-color: var(--card-color);
+            color: var(--text-color);
+        }
+
+        .task-form button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .task-form button:hover {
+            background-color: var(--accent-color);
+        }
+
+        .task-list {
+            list-style-type: none;
+        }
+
+        .task-item {
+            background-color: var(--card-color);
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .task-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .task-item.completed {
+            opacity: 0.7;
+            text-decoration: line-through;
+            background-color: var(--secondary-color);
+        }
+
+        .task-item .task-content {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .task-item .task-text {
+            margin-left: 10px;
+            font-size: 1.1rem;
+        }
+
+        .task-item .actions {
+            display: flex;
+        }
+
+        .task-item button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .task-item .complete-btn {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .task-item .complete-btn:hover {
+            background-color: var(--accent-color);
+        }
+
+        .task-item .delete-btn {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .task-item .delete-btn:hover {
+            background-color: #ff0000;
+        }
+
+        .task-item .edit-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .task-item .edit-btn:hover {
+            background-color: var(--accent-color);
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            background-color: var(--card-color);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .filters button {
+            margin: 0 5px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: transparent;
+            color: var(--text-color);
+        }
+
+        .filters button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .task-stats {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: var(--text-color);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .priority-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .priority-low { background-color: #27ae60; }
+        .priority-medium { background-color: #f39c12; }
+        .priority-high { background-color: #c0392b; }
+
+        .due-date {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-left: 10px;
+        }
+
+        .mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .mode-toggle:hover {
+            background-color: var(--accent-color);
+        }
+
+        .party-popper {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 2rem;
+            animation: popIn 0.5s ease-out, float 2s ease-in-out infinite;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .pending-tasks-bubbles {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .task-bubble {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            margin: 5px;
+            animation: bubbleFloat 3s ease-in-out infinite;
+            animation-delay: calc(var(--i) * 0.1s);
+        }
+
+        @keyframes bubbleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button id="modeToggle" class="mode-toggle">
+            <i class="fas fa-moon"></i> Dark Mode
+        </button>
+        <header>
+            <h1>Enhanced Task Manager</h1>
+            <p>Organize your tasks efficiently</p>
+        </header>
+        <div id="pendingTasksBubbles" class="pending-tasks-bubbles"></div>
+        <form class="task-form">
+            <input type="text" id="taskInput" placeholder="Enter a new task" required>
+            <input type="date" id="dueDate">
+            <select id="priority">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+            <button type="submit">Add Task</button>
+        </form>
+        <div class="filters">
+            <button id="allFilter" class="active">All</button>
+            <button id="activeFilter">Active</button>
+            <button id="completedFilter">Completed</button>
+        </div>
+        <ul id="taskList" class="task-list"></ul>
+        <div class="task-stats">
+            <p>Total tasks: <span id="totalTasks">0</span></p>
+            <p>Completed tasks: <span id="completedTasks">0</span></p>
+        </div>
+    </div>
+    <script src="./script.js"></script>
+</body>
+</html>
